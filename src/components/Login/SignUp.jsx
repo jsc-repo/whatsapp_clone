@@ -33,7 +33,7 @@ const SignUp = () => {
     onSubmit: (values, actions) => {
       const vals = { ...values }; //saves the values so we can reset form right away
       actions.resetForm();
-      fetch("http://localhost:5173/", {
+      fetch("http://localhost:4000/auth/register", {
         method: "POST",
         credentials: "include",
         headers: {

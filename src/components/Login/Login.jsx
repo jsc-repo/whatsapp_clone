@@ -30,8 +30,31 @@ const Login = () => {
         .max(28, "password too long"),
     }),
     onSubmit: (values, actions) => {
-      alert(JSON.stringify(values, null, 2));
+      const vals = { ...values }; //saves the values so we can reset form right away
       actions.resetForm();
+      fetch("http://localhost:4000/auth/login", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(vals),
+      })
+        .catch((err) => {
+          return;
+        })
+        .then((res) => {
+          if (!res || !res.ok || res.status >= 400) {
+            return;
+          }
+          return res.json();
+        })
+        .then((data) => {
+          if (!data) {
+            return;
+          }
+          console.log(data);
+        });
     },
   });
 
