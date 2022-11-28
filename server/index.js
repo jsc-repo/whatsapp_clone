@@ -3,10 +3,13 @@ const { Server } = require("socket.io");
 const app = express();
 const helmet = require("helmet");
 const cors = require("cors");
+const session = require("express-session");
 
 const authRouter = require("./routers/authRouter");
 
 const server = require("http").createServer(app);
+
+const dotenv = require("dotenv").config();
 
 const io = new Server(server, {
   cors: {
@@ -23,6 +26,20 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(
+  session({
+    secret: process.env.COOKIE_SECRET,
+    credentials: true,
+    name: "sid", // sessionID
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.ENVIRONMENT === "production",
+      httpOnly: true,
+      sameSite: process.env.ENVIRONMENT === "production" ? "none" : "lax",
+    },
+  })
+);
 
 app.use("/auth", authRouter);
 
